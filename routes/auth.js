@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const Joi = require("@hapi/joi");
 const schemaRegister = Joi.object({
@@ -30,9 +31,23 @@ router.post("/login", async (req, res) => {
       .status(400)
       .json({ error: true, mensaje: "Usuario no registrado" });
 
+  const token = jwt.sign(
+    {
+      name: user.name,
+      id: user._id,
+    },
+    process.env.TOKEN_SECRET
+  );
+
+  res.header("auth-token", token).json({
+    error: null,
+    data: { token },
+  });
+
   res.json({
     error: null,
     mensaje: "Bienvenido",
+    token: token,
   });
 });
 

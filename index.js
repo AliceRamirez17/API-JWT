@@ -21,9 +21,12 @@ async function main() {
 
 // Importar routes
 const authRouter = require("./routes/auth");
+const validaToken = require("./routes/validate-token");
+const admin = require("./routes/admin");
 
 // Route middlewares
 app.use("/api/user", authRouter);
+app.use("/api/admin", validaToken, admin);
 
 app.get("/", (req, res) => {
   res.json({
